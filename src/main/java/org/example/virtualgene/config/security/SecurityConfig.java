@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -23,8 +24,6 @@ public class SecurityConfig {
     @Autowired
     SecurityContextRepository securityContextRepository;
     @Autowired
-    MHLogoutSuccessHandler logoutSuccessHandler;
-    @Autowired
     MHServerAuthenticationEntryPoint authenticationEntryPoint;
 
     @Value("${app.success-url}")
@@ -39,13 +38,11 @@ public class SecurityConfig {
                         .pathMatchers("/", "/login**", "/error**", "/assets/**", "/security/**").permitAll()
                         .anyExchange().authenticated()
                 )
-                .formLogin(formLoginSpec ->
-                        formLoginSpec.loginPage("/login")
-                                .authenticationManager(authenticationManager)
-                                .securityContextRepository(securityContextRepository)
-                                .authenticationSuccessHandler(new MHLoginSuccessHandler(successUrl, maxIdleTime)))
-                .logout(logoutSpec ->
-                        logoutSpec.logoutSuccessHandler(logoutSuccessHandler).logoutUrl("/logout").requiresLogout(ServerWebExchangeMatchers.pathMatchers("/logout")))
+                .authenticationManager(authenticationManager)
+                .securityContextRepository(securityContextRepository)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .exceptionHandling(Customizer.withDefaults())
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .exceptionHandling(exceptionHandlingSpec -> exceptionHandlingSpec.authenticationEntryPoint(authenticationEntryPoint))
                 .cors(corsSpec -> corsSpec.configurationSource(corsConfigurationSource()))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable).build();

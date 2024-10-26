@@ -1,7 +1,10 @@
 package org.example.virtualgene.config.security;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -15,28 +18,22 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext context) {
-        return exchange.getSession()
-                .doOnNext(session -> session.getAttributes().put(WebSessionServerSecurityContextRepository.DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME, context))
-                .then();
-    }
-    @Override
-    public Mono<SecurityContext> load(ServerWebExchange exchange) {
-        return exchange.getSession()
-                .mapNotNull(session -> session.getAttribute(WebSessionServerSecurityContextRepository.DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME))
-                .switchIfEmpty(Mono.error(new BadCredentialsException("No session")))
-                .cast(SecurityContext.class)
-                .map(SecurityContext::getAuthentication)
-                .flatMap(this::authenticate)
-                .onErrorResume(e -> Mono.empty());
+        return null;
     }
 
-    public Mono<SecurityContext> authenticate(Authentication authentication) {
-        Object credentials = authentication.getCredentials();
-        if (credentials == null) {
-            return Mono.error(new BadCredentialsException("No credentials"));
-        }
-        return Mono.just(new SecurityContextImpl(authentication));
+    @Override
+    public Mono<SecurityContext> load(ServerWebExchange exchange) {
+        return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
+                .filter(authHeader -> authHeader.startsWith("Bearer "))
+                .flatMap(authHeader -> {
+                    String authToken = authHeader.substring(7);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(authToken, authToken);
+                    return this.authenticationManager.authenticate(authentication).map(SecurityContextImpl::new);
+                });
     }
 }
