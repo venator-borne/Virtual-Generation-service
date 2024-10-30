@@ -5,17 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.virtualgene.DTO.FileChunkDTO;
 import org.example.virtualgene.DTO.FileChunkMergeDTO;
 import org.example.virtualgene.DTO.FileChunkUploadResultDTO;
+import org.example.virtualgene.common.enums.ResourcesCategory;
+import org.example.virtualgene.common.enums.ResourcesType;
 import org.example.virtualgene.domain.DAO.Resource;
 import org.example.virtualgene.domain.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -108,6 +106,10 @@ public class ResourcesService {
 
     public Flux<Resource> findResource(int page, int size, UUID id) {
         return resourceRepository.findByAccountIdOrAccessIs(PageRequest.of(page, size), id, true);
+    }
+
+    public Mono<Long> countResource(List<ResourcesType> types, List<ResourcesCategory> categories, UUID id) {
+        return resourceRepository.countByAccountIdOrAccessIsAndTypeInAndCategoryIn(id, true, types, categories);
     }
 
     private Mono<Boolean> updateUploadedChunkList(String identifier, String name, Integer value) {

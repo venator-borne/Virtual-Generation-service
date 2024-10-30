@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.virtualgene.DTO.FileChunkDTO;
 import org.example.virtualgene.DTO.FileChunkMergeDTO;
 import org.example.virtualgene.DTO.FileChunkUploadResultDTO;
+import org.example.virtualgene.DTO.ResourcesQueryDTO;
 import org.example.virtualgene.domain.DAO.Resource;
 import org.example.virtualgene.service.ResourcesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,15 @@ public class ResourcesController {
         return resourcesService.mergeResources(fileChunkMergeDTO, uuid).map(ResponseEntity::ok);
     }
 
-    @GetMapping("/files")
-    public Flux<Resource> find(@RequestParam int page, @RequestParam int size, Principal user) {
+    @PostMapping("/files")
+    public Flux<Resource> find(@RequestBody ResourcesQueryDTO resourcesQueryDTO, Principal user) {
         UUID uuid = UUID.fromString(user.getName());
-        return resourcesService.findResource(page, size, uuid);
+        return resourcesService.findResource(resourcesQueryDTO.getPage(), resourcesQueryDTO.getSize(), uuid);
+    }
+
+    @PostMapping("/count")
+    public Mono<ResponseEntity<Long>> count(@RequestBody ResourcesQueryDTO resourcesQueryDTO, Principal user) {
+        UUID uuid = UUID.fromString(user.getName());
+        return resourcesService.countResource(resourcesQueryDTO.getTypes(), resourcesQueryDTO.getCategories(), uuid).map(ResponseEntity::ok);
     }
 }

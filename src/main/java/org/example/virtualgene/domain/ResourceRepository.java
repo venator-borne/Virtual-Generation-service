@@ -1,5 +1,6 @@
 package org.example.virtualgene.domain;
 
+import org.example.virtualgene.common.enums.ResourcesCategory;
 import org.example.virtualgene.common.enums.ResourcesType;
 import org.example.virtualgene.domain.DAO.Resource;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -16,4 +18,6 @@ public interface ResourceRepository extends ReactiveCrudRepository<Resource, Lon
     public Mono<Resource> findByIdentifier(String identifier);
 
     public Flux<Resource> findByAccountIdOrAccessIs(Pageable pageable, UUID accountId, Boolean access);
+
+    public Mono<Long> countByAccountIdOrAccessIsAndTypeInAndCategoryIn(UUID accountId, Boolean access, List<ResourcesType> types, List<ResourcesCategory> categories);
 }
