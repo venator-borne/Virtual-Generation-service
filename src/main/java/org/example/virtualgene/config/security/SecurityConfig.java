@@ -26,11 +26,6 @@ public class SecurityConfig {
     @Autowired
     MHServerAuthenticationEntryPoint authenticationEntryPoint;
 
-    @Value("${app.success-url}")
-    private String successUrl;
-    @Value("${spring.session.max-idle-time}")
-    private Integer maxIdleTime;
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http

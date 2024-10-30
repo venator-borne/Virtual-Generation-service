@@ -2,22 +2,19 @@ package org.example.virtualgene.service;
 
 import org.example.virtualgene.DTO.AuthenticationDTO;
 import org.example.virtualgene.DTO.LoginDTO;
-import org.example.virtualgene.DTO.NewAccountDto;
+import org.example.virtualgene.DTO.NewAccountDTO;
 import org.example.virtualgene.domain.AccountRepository;
 import org.example.virtualgene.domain.DAO.Account;
 import org.example.virtualgene.service.utils.RSAUtils;
 import org.example.virtualgene.service.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class AccountService {
@@ -33,7 +30,7 @@ public class AccountService {
     @Autowired
     ReactiveRedisTemplate<String, Object> redisTemplate;
 
-    public Mono<Account> createAccount(NewAccountDto newAccount) {
+    public Mono<Account> createAccount(NewAccountDTO newAccount) {
         String roles = "ROLE_ADMIN,ROLE_USER";
         return accountRepository.countByEmail(newAccount.getEmail())
                 .flatMap(n -> {

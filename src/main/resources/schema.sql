@@ -7,3 +7,16 @@ CREATE TABLE IF NOT EXISTS account
     password VARCHAR(255),
     roles VARCHAR(255)
 );
+
+DROP TABLE IF EXISTS resource CASCADE;
+CREATE TABLE IF NOT EXISTS resource
+(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    identifier VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    access BOOLEAN DEFAULT FALSE,
+    category VARCHAR(10) DEFAULT 'FIGURE',
+    type VARCHAR(10) DEFAULT 'VIDEO',
+    account_id UUID REFERENCES account (id),
+    create_date TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+);

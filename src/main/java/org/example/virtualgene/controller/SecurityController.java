@@ -2,7 +2,7 @@ package org.example.virtualgene.controller;
 
 import org.example.virtualgene.DTO.AuthenticationDTO;
 import org.example.virtualgene.DTO.LoginDTO;
-import org.example.virtualgene.DTO.NewAccountDto;
+import org.example.virtualgene.DTO.NewAccountDTO;
 import org.example.virtualgene.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class SecurityController {
     }
 
     @PostMapping("/signup")
-    public Mono<ResponseEntity<String>> signup(@RequestBody NewAccountDto newAccountDto) {
+    public Mono<ResponseEntity<String>> signup(@RequestBody NewAccountDTO newAccountDto) {
         return accountService.createAccount(newAccountDto)
                 .map(account -> ResponseEntity.ok().body("success"))
                 .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().body(e.getMessage())));

@@ -5,7 +5,7 @@ import org.example.virtualgene.domain.DAO.Account;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Data
-public class NewAccountDto {
+public class NewAccountDTO {
     private String name;
     private String email;
     private String password;

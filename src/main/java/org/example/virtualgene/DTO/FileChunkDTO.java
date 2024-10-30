@@ -20,12 +20,9 @@ public class FileChunkDTO {
     private String identifier;
     @NotBlank(message = "filename cannot be null")
     private String filename;
-    private String fileType;
-    private String relativePath;
     @NotNull(message = "totalSize cannot be null")
     private Long totalSize;
     private FilePart file;
-    private String type;
     @NotNull(message = "chunkIdentifier cannot be null")
     private String chunkIdentifier;
 }
