@@ -91,6 +91,8 @@ public class ResourcesService {
                 .identifier(storageId)
                 .name(fileChunkMergeDTO.getName())
                 .accountId(id)
+                .bucket(resourcesBucketName)
+                .path(objectPath)
                 .createTime(ZonedDateTime.now(ZoneId.of("UTC"))).build();
 
         return minioService.reactComposeObjectAsync(fileChunkMergeDTO.getTotalChunks(), resourcesBucketName, tmpPath, objectPath)

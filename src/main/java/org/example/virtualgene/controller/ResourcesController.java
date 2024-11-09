@@ -44,6 +44,7 @@ public class ResourcesController {
     @PostMapping("/files")
     public Flux<Resource> find(@RequestBody ResourcesQueryDTO resourcesQueryDTO, Principal user) {
         UUID uuid = UUID.fromString(user.getName());
+
         return resourcesService.findResource(resourcesQueryDTO.getPage(), resourcesQueryDTO.getSize(), uuid);
     }
 

@@ -1,6 +1,8 @@
 package org.example.virtualgene.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.DefaultServerRedirectStrategy;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
@@ -21,6 +23,10 @@ public class MHServerAuthenticationEntryPoint implements ServerAuthenticationEnt
 
     @Override
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
-        return redirectStrategy.sendRedirect(exchange, homePage);
+//        return redirectStrategy.sendRedirect(exchange, homePage);
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        response.getHeaders().setLocation(URI.create("/"));
+        return response.setComplete();
     }
 }

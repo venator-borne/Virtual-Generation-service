@@ -17,6 +17,8 @@ public interface ResourceRepository extends ReactiveCrudRepository<Resource, Lon
 
     public Mono<Resource> findByIdentifier(String identifier);
 
+    public Mono<Resource> findByIdentifierAndAccountId(String identifier, UUID accountId);
+
     public Flux<Resource> findByAccountIdOrAccessIs(Pageable pageable, UUID accountId, Boolean access);
 
     public Mono<Long> countByAccountIdOrAccessIsAndTypeInAndCategoryIn(UUID accountId, Boolean access, List<ResourcesType> types, List<ResourcesCategory> categories);

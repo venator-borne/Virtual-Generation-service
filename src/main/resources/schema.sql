@@ -18,5 +18,21 @@ CREATE TABLE IF NOT EXISTS resource
     category VARCHAR(10) DEFAULT 'FIGURE',
     type VARCHAR(10) DEFAULT 'VIDEO',
     account_id UUID REFERENCES account (id),
+    path VARCHAR(255) NOT NULL,
+    bucket VARCHAR(255) NOT NULL,
+    create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS model CASCADE;
+CREATE TABLE IF NOT EXISTS model
+(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    access BOOLEAN DEFAULT FALSE,
+    usage VARCHAR(10) DEFAULT 'Portrait',
+    status VARCHAR(10),
+    detail VARCHAR(255),
+    account_id UUID REFERENCES account (id),
+    dataset_id UUID REFERENCES meta_human_dataset (id) ON DELETE SET NULL,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

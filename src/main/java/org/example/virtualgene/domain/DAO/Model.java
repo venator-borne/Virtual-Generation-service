@@ -2,8 +2,9 @@ package org.example.virtualgene.domain.DAO;
 
 import lombok.Builder;
 import lombok.Data;
-import org.example.virtualgene.common.enums.ResourcesCategory;
-import org.example.virtualgene.common.enums.ResourcesType;
+import org.example.virtualgene.DTO.TrainDetailsDTO;
+import org.example.virtualgene.common.enums.ModelStatus;
+import org.example.virtualgene.common.enums.ModelUsage;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -12,17 +13,16 @@ import java.util.UUID;
 
 @Data
 @Builder
-@Table("resource")
-public class Resource {
+@Table("model")
+public class Model {
     @Id
     private UUID id;
-    private String identifier;
     private String name;
     private Boolean access;
-    private ResourcesCategory category;
-    private ResourcesType type;
+    private ModelUsage usage;
+    private ModelStatus status;
+    private String detail;
     private UUID accountId;
-    private String path;
-    private String bucket;
+    private UUID datasetId;
     private ZonedDateTime createTime;
 }
